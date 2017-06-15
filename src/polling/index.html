@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>polling</title>
+</head>
+
+<body>
+    [polling] Press F12 To Open Dev Tools ,And Check The Console Output.
+</body>
+<script>
+    function createXHR() {
+        if (typeof XMLHttpRequest != 'undefined') {
+            return new XMLHttpRequest();
+        } else if (typeof ActiveXObject != 'undefined') {
+            if (typeof arguments.callee.activeXString != "string") {
+                var versions = ["MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.3.0",
+                        "MSXML2.XMLHttp"
+                    ],
+                    i, len;
+                for (i = 0, len = versions.length; i < len; i++) {
+                    try {
+                        new ActiveXObject(versions[i]);
+                        arguments.callee.activeXString = versions[i];
+                        break;
+                    } catch (ex) {
+
+                    }
+                }
+            }
+            return new ActiveXObject(arguments.callee.activeXString);
+        } else {
+            throw new Error("no xhr object available");
+        }
+    }
+
+    function request(url, method, data, callback) {
+        method = method || 'get';
+        data = data || null;
+        var xhr = createXHR();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status == 304) {
+                    callback(xhr.responseText);
+                }
+            }
+        };
+        xhr.open(method, url, true);
+        xhr.send(data);
+    }
+
+    function responseCallback(responseText) {
+        console.log(`[end]reviece resoponse from server: ${responseText}`);
+        polling();
+    }
+
+    function polling() {
+        setTimeout(function() {
+            console.log(`[start]polling request sended,wait for response......`);
+            request('http://localhost:8081/api', 'get', '', responseCallback);
+        }, 1000);
+    }
+
+    polling();
+</script>
+
+</html>

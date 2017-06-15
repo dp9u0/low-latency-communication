@@ -1,2 +1,8 @@
-# low-latency-communication
-low latency communication for web
+some low latency communication for web
+
+# polling
+# long-polling
+# http streaming
+# WebSockets  
+# WebRTC 
+# SSE
