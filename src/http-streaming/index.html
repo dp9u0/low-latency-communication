@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>polling</title>
+    <title>http-stream readyState</title>
 </head>
 
 <body>
-    [polling] Press F12 To Open Dev Tools ,And Check The Console Output.
+    [http-stream readyState] Press F12 To Open Dev Tools ,And Check The Console Output.
 </body>
 <script>
     function createXHR() {
@@ -40,32 +40,38 @@
     function request(url, method, data, callback) {
         method = method || 'get';
         data = data || null;
+        received = 0;
         var xhr = createXHR();
         xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4) {
-                if (xhr.status >= 200 && xhr.status < 300 || xhr.status == 304) {
-                    callback(xhr.responseText);
-                }
+            var result;
+            result = xhr.responseText.substring(received);
+            received += result.length;
+            if (xhr.readyState === 3) {
+                callback(result, false);
+            } else if (xhr.readyState === 4) {
+                callback(result, true);
             }
         };
         xhr.open(method, url, true);
         xhr.send(data);
     }
 
-    function responseCallback(data) {
+    function responseCallback(data, finished) {
         console.log(`[data:${new Date().toLocaleString()}]${data}`);
-        console.log(`[end:${new Date().toLocaleString()}]----------------------------------------`);
-        polling();
+        if (finished) { //if (dataObj.end) 
+            console.log(`[end:${new Date().toLocaleString()}]----------------------------------------`);
+            httpStream();
+        }
     }
 
-    function polling() {
-        setTimeout(function() {
-            console.log(`[start:${new Date().toLocaleString()}]----------------------------------------`);
-            request('./api', 'get', '', responseCallback);
-        }, 1000);
-    }
+    function httpStream() {
+        setTimeout(() => {
+            console.log(`[begin:${new Date().toLocaleString()}]----------------------------------------`);
+            request('./api', 'get', '', responseCallback)
+        }, 1);
+    };
 
-    polling();
+    httpStream();
 </script>
 
 </html>

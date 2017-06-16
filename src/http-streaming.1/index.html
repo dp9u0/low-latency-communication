@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>http-stream iframe</title>
+</head>
+
+<body>
+    [http-stream iframe] Press F12 To Open Dev Tools ,And Check The Console Output.
+</body>
+<script>
+    function responseCallback(data) {
+        console.log(`[data:${new Date().toLocaleString()}]${data}`);
+        let dataObj = JSON.parse(data);
+        if (dataObj.end) {
+            console.log(`[end:${new Date().toLocaleString()}]----------------------------------------`);
+            httpStream('./api');
+        }
+    }
+
+    function httpStream(url) {
+        console.log(`[begin:${new Date().toLocaleString()}]----------------------------------------`);
+        let ifr = document.getElementById("iframeHttpStream");
+        if (!ifr) {
+            ifr = document.createElement("iframe");
+            ifr.id = "iframeHttpStream";
+            ifr.style = "display:none";
+            document.body.appendChild(ifr);
+        }
+        ifr.src = url;
+    };
+
+    httpStream('./api');
+</script>
+
+</html>

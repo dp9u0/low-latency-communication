@@ -1,16 +1,29 @@
 let http = require('http');
 let fs = require("fs");
-let random = require("random-js")();
+let dataFactory = require("../common/dataFactory").dataFactory;
+dataFactory.start();
 
-let store = { num: 0 };
-
-setInterval(() => {
-    store.num = random.integer(1, 10);
-}, 10);
+const LONG_POLLING_TIMEOUT = 30000;
 
 let server = http.createServer(function(req, res) {
     if (req.url == '/api') {
-        resopnseToClient(res, 10);
+        datas = dataFactory.tryGetData();
+        if (datas) {
+            let response = { tag: 'long-polling', status: true, msg: 'data returned(d)', data: datas };
+            res.end(JSON.stringify(response));
+        } else {
+            //TIMEOUT 后 直接返回
+            setTimeout(() => {
+                dataFactory.cleanCallback();
+                let response = { tag: 'long-polling', status: false, msg: 'no data returned', };
+                res.end(JSON.stringify(response));
+            }, LONG_POLLING_TIMEOUT);
+            dataFactory.setCallback((datas) => {
+                dataFactory.cleanCallback();
+                let response = { tag: 'long-polling', status: true, msg: 'data returned(c)', data: datas };
+                res.end(JSON.stringify(response));
+            });
+        }
     };
 
     if (req.url == '/') {
@@ -23,20 +36,6 @@ let server = http.createServer(function(req, res) {
         });
     };
 }).listen(8082, 'localhost');
-
-function resopnseToClient(res, timeout, currentTime = 0) {
-    if (store.num === 5) {
-        let response = { tag: 'long-polling', status: true, msg: `data returned after ${currentTime*1000}s`, data: new Date().toLocaleString() };
-        res.end(JSON.stringify(response));
-    } else if (timeout === currentTime) {
-        let response = { tag: 'long-polling', status: false, msg: 'timeout,no data returned', data: '' };
-        res.end(JSON.stringify(response));
-    } else {
-        setTimeout(() => {
-            resopnseToClient(res, timeout, currentTime + 1);
-        }, 1000);
-    }
-}
 
 console.log(`server start on http://localhost:8082`);
 
