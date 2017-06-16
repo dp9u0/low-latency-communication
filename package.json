@@ -13,12 +13,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/dp9u0/low-latency-communication.git"
+        "url": ""
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/dp9u0/low-latency-communication/issues"
+        "url": ""
     },
-    "homepage": "https://github.com/dp9u0/low-latency-communication#readme"
+    "homepage": ""
 }
