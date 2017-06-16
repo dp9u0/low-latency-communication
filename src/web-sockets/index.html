@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>websocket</title>
+    <script src="https://cdn.bootcss.com/socket.io/2.0.3/socket.io.js"></script>
+</head>
+
+<body>
+    [websocket] Press F12 To Open Dev Tools ,And Check The Console Output.
+</body>
+<script>
+    function socket() {
+        console.log(`[begin:${new Date().toLocaleString()}]----------------------------------------`);
+        let socket = io('http://localhost:8087');
+        socket.on('data', function(data) {
+            console.log(`[data:${new Date().toLocaleString()}]${data}`);
+        });
+    }
+    socket();
+</script>
+
+</html>
