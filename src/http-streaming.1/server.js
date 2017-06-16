@@ -9,11 +9,11 @@ let server = http.createServer(function(req, res) {
     if (req.url == '/api') {
         setTimeout(() => {
             dataFactory.cleanCallback();
-            let response = { tag: 'http-stream', status: false, msg: 'data end', end: true };
+            let response = { tag: 'http-stream', status: false, msg: 'end', end: true };
             res.end("<script type=\"text/javascript\">parent.responseCallback('" + JSON.stringify(response) + "')</script>");
         }, HTTP_STREAM_TIMEOUT);
         dataFactory.setCallback((datas) => {
-            let response = { tag: 'http-stream', status: true, msg: 'data returned', data: datas };
+            let response = { tag: 'http-stream', status: true, msg: 'returned', data: datas };
             res.write("<script type=\"text/javascript\">parent.responseCallback('" + JSON.stringify(response) + "')</script>");
         });
     };

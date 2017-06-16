@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>server send event</title>
+</head>
+
+<body>
+    [server send event] Press F12 To Open Dev Tools ,And Check The Console Output.
+</body>
+<script>
+    function responseCallback(e) {
+        console.log(`[data:${new Date().toLocaleString()}]${e.data}`);
+    }
+
+    function sse() {
+        var source = new EventSource('./api'); //source.close();
+        source.onmessage = responseCallback;
+        source.onopen = function() {
+            console.log(`[begin:${new Date().toLocaleString()}]----------------------------------------`);
+        }
+        source.onerror = function(err) {
+            console.error(err);
+        }
+    }
+
+    sse();
+</script>
+
+</html>

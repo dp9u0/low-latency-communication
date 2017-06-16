@@ -1,23 +1,26 @@
 let http = require('http');
 let fs = require("fs");
+let random = require("random-js")();
 let dataFactory = require("../common/dataFactory").dataFactory;
 dataFactory.start();
 
-const HTTP_STREAM_TIMEOUT = 5 * 60 * 1000;
+const EVENT_STREAM_TIMEOUT = 30000;
+let id = 1;
 
 let server = http.createServer(function(req, res) {
     if (req.url == '/api') {
-        setTimeout(() => {
-            dataFactory.cleanCallback();
-            let response = { tag: 'http-stream', status: false, msg: 'end', end: true };
-            res.end(JSON.stringify(response));
-        }, HTTP_STREAM_TIMEOUT);
+        res.writeHead(200, {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            'Access-Control-Allow-Origin': '*',
+            "Connection": "keep-alive"
+        });
         dataFactory.setCallback((datas) => {
-            let response = { tag: 'http-stream', status: true, msg: 'returned', data: datas };
-            res.write(JSON.stringify(response));
+            let response = { tag: 'sse', status: true, msg: 'returned', data: datas };
+            res.write('id: ' + id++ + '\n');
+            res.write("data: " + JSON.stringify(response) + '\n\n');
         });
     };
-
     if (req.url == '/') {
         fs.readFile("./index.html", "binary", function(err, file) {
             if (!err) {
@@ -27,9 +30,9 @@ let server = http.createServer(function(req, res) {
             }
         });
     };
-}).listen(8083, 'localhost');
+}).listen(8085, 'localhost');
 
-console.log(`server start on http://localhost:8083`);
+console.log(`server start on http://localhost:8085`);
 
 server.on('connection', function(socket) {
     console.log('connection');
