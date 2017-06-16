@@ -1,0 +1,24 @@
+{
+    "name": "low-latency-communication",
+    "version": "1.0.0",
+    "description": "some low latency communication for web",
+    "main": "index.js",
+    "dependencies": {
+        "random-js": "^1.0.8",
+        "socket.io": "^2.0.3"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dp9u0/low-latency-communication.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/dp9u0/low-latency-communication/issues"
+    },
+    "homepage": "https://github.com/dp9u0/low-latency-communication#readme"
+}
